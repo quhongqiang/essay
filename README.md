@@ -1,4 +1,6 @@
-# Tutorial
-学习目录
-记录一个BUG 
-ajax请求在chrome中出现了provisional headers are shown错误
+# 这些不是坑，是传送阵
+
+### 
+问题描述：ajax请求头中出现**provisional headers are shown**
+
+

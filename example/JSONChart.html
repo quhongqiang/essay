@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>JSON深拷贝性能测试</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        function createData(deep = 0, breadth = 0) {
+            const root = {}
+            let pointer = root
+            for (let i = 0; i < deep; i++) {
+                pointer.data = {}
+                pointer = pointer.data
+                for (let j = 0; j < breadth && i === deep -1; j++) {
+                    pointer[j] = j
+                }
+            }
+            return root
+        }
+        const DataBase = {
+            labels: [],
+            data: []
+        }
+        for (let i = 0, j = 1; i < j; i++) {
+            try {
+                const start = new Date().getTime()
+                JSON.parse(JSON.stringify(createData(i)))
+                if (i % 10 === 0) {
+                    DataBase.data.push(new Date().getTime() - start)
+                    DataBase.labels.push(i)
+                }
+                j++
+            } catch (error) {
+                console.log('栈溢出，JSON深度：%s', i)
+                i = j
+            }
+        }
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+            // The data for our dataset
+            data: {
+                labels: DataBase.labels,
+                datasets: [
+                    {
+                        label: "JSON深拷贝性能测试",
+                        data: DataBase.data,
+                        borderColor: ['rgba(255,99,132,1)'],
+                        backgroundColor: ['rgba(255,255,255,0)'],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            // Configuration options go here
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+        </script>
+</body>
+</html>
