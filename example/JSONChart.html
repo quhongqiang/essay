@@ -31,7 +31,7 @@
             try {
                 const start = new Date().getTime()
                 JSON.parse(JSON.stringify(createData(i)))
-                if (i % 10 === 0) {
+                if (i % 100 === 0) {
                     DataBase.data.push(new Date().getTime() - start)
                     DataBase.labels.push(i)
                 }
