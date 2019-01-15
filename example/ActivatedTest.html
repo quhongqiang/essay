@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vue activated生命周期测试</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        console.time('执行耗时：')
+        let test, APP
+        function CreateVueCacheComponent(groupId) {
+            console.group(groupId)
+            let index = [], color = ['black','#cf1322', 'black', '#eb2f96', 'black', '#1890ff']
+            test = Vue.component('test', {
+                mounted () {
+                    index.push('子组件Call Mounted Hook')
+                },
+                activated() {
+                    index.push('子组件Call Activated Hook')
+                },
+                template: '<h1>Hello World</h1>'
+            })
+            new Vue({
+                component: {
+                    test
+                },
+                mounted () {
+                    index.push('父组件Call Mounted Hook')
+                },
+                template: `
+                <div id="app">
+                    <keep-alive>
+                        <component is='test'></component>
+                    </keep-alive>
+                </div>
+                `
+            }).$mount('#app')
+            console.log(`%c执行顺序:%c${index.join('%c====>%c')}`, ...color.map(t => `color: ${t}`))
+            console.groupEnd()
+        }
+        window.onload = function () {
+            for (let i = 0; i < 100; i++) {
+                CreateVueCacheComponent(`测试组${i}`)
+            }
+            console.timeEnd('执行耗时：')
+        }
+        // 结论：一旦启用了cache组件，则被cached组件的activated事件会从最里面的子组件开始，
+        // 依次向外触发，且第一次mounted事件触发之后就会触发。并非是重新激活之后才会触发
+    </script>
+</body>
+</html>
