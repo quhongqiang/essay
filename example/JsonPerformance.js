@@ -10,7 +10,7 @@ function createData(deep = 0, breadth = 0) {
     }
     return root
 }
-for (let i = 1000; i < 10000; i++) {
+for (let i = 1000; i < 5000; i++) {
     try {
         const label = `JSON深度：${i} 深度拷贝花费时间：`
         console.time(label)
